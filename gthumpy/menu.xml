@@ -1,0 +1,52 @@
+<ui>
+ <menubar name="menubar">
+
+  <menu action="File">
+   <menuitem action="Quit"/>
+   <menuitem action="Open"/>
+   <menuitem action="Get"/>
+  </menu>
+
+  <menu action="Edit">
+   <menuitem action="Rotate 90"/>
+   <menuitem action="Rotate -90"/>
+   <menuitem action="Rotate 180"/>
+   <menuitem action="Delete"/>
+   <menuitem action="EditPicture"/>
+  </menu>
+
+  <menu action="View">
+   <menuitem action="All"/>
+   <menuitem action="Fullscreen"/>
+   <menuitem action="Videos"/>
+   <menuitem action="Slide"/>
+   <menuitem action="Exif"/>
+  </menu>
+
+  <menu action="Go">
+   <menuitem action="CD"/>
+   <menuitem action="First"/>
+   <menuitem action="Prev"/>
+   <menuitem action="Next"/>
+   <menuitem action="Last"/>
+  </menu>
+
+ </menubar>
+
+ <toolbar name="toolbar">
+  <toolitem action="Open"/>
+  <toolitem action="Delete"/>
+  <toolitem action="Rotate 90"/>
+  <toolitem action="Rotate -90"/>
+  <toolitem action="CD"/>
+  <toolitem action="First"/>
+  <toolitem action="Prev"/>
+  <toolitem action="Next"/>
+  <toolitem action="Videos"/>
+  <toolitem action="Fullscreen"/>
+  <toolitem action="Exif"/>
+  <toolitem action="All"/>
+  <toolitem action="Slide"/>
+  <toolitem action="Get"/>
+ </toolbar>
+</ui>

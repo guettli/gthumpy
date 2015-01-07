@@ -1,0 +1,211 @@
+<html>
+ <head>
+  <title>gthumpy: Static HTML Slide Show</title>
+ <link rel=stylesheet type="text/css" href="src/misc/style.css">
+ <link rel=stylesheet type="text/css" href="misc/style.css">
+ </head>
+ <body>
+ <div align="center"><b>Gthumpy: Images and Metadata</b></div>
+
+<!--TOC-->
+ 
+<h1>Introduction</h1>
+
+ <h2>About Gthumpy</h2> 
+
+ Gthumpy is small collection of scripts for handling images from a
+ digital camera.  One script lets you enter metadata and view picture
+ (date, description, title) in a GUI and an other creates static HTML
+ files and thumbnails.
+
+ <br><br>
+
+ The created HTML files don't need a http server or CGI, you can burn
+ a CD/DVD and give this to your friends. You only need a webbrowser to
+ view the created HTML files.
+
+ <h2>Supported platforms</h2>
+
+ Gthumpy gets developed on Linux, but should be portable to win32. The
+ HTML files created with "make-my-pictures.py" can be viewed on any
+ platform with a webbrowser.
+
+ <h2>How to use it</h2>
+
+<pre>
+ Step 1:
+
+ Create a directory with all images which belong to one group.
+ If you use the current date like in the example, the directories
+ are always sorted in chronological order.
+
+ Example:
+
+ > cd image-dir
+ > mkdir 2004-12-31  # or mkdir `date --iso`
+ > cd $_
+ > gphoto2 --get-all-files
+
+ If your camera is supported by gphoto, you can use the "get" button to this step.
+
+
+ Step 2:
+
+ Then have a look at the pictures, rotate, delete and give description
+ with "editMetadata.py". This is a pygtk GUI:
+
+ > python editMetadata.py image-dir/2004-04-14
+
+ You can create a "gthumpy.conf" in "~/.config/gthumpy/gthumpy.conf" or in the
+ source directory. You can set the lanuage and the
+ image-directory. Look at the default config file.
+
+ > python make-my-pictures.py
+
+ This scripts creates thumbnails with convert of ImageMagick and HTML
+ pages. This script behaves like the unix tool "make". If a picture
+ gets changed, the thumbnails get created again.
+
+</pre>
+
+<h2>What directory layout should I use?</h2>
+
+ I use a directory for each day I download the images from the camera
+ to the computer.
+
+<pre>
+ image-dir/2006-01-03/IMG1.jpg
+ image-dir/2006-01-03/IMG2.jpg
+
+ image-dir/2006-02-14/IMG3.jpg
+ image-dir/2006-02-14/IMG4.jpg
+</pre>
+
+At the moment I have 3553 pictures in 111 directories.
+
+<h1>editMetadata.py</h1>
+
+ This script is a GUI written with <a href="http://www.pygtk.org/">pygtk</a>.<br>
+ <img src="screenshots/editMetadata.jpg"><br><br>
+
+ The metadata (date, title, description) are saved in a file per image
+ (IMAGE.gthumpy)<br><br>
+
+ You can display all pictures of a directory (incl. metadata):<br>
+ <img src="screenshots/all.jpg"><br><br>
+
+ You can change the directory and give each directory a description:<br>
+ <img src="screenshots/changeDirectory.png"><br><br>
+
+<h2>Keyboard Shortcuts for editMetadata</h2>
+ <ul>
+  <li>PageUp/PageDown: Previous/Next Image
+  <li>Ctrl-p/Ctrl-n: Previous/Next Image
+  <li>ESC: Change between fullscreen and normal mode
+  <li>Pos1/End (in fullscreen mode): First/Last Image of current directory
+  <li>Ctrl-x: Delete current image
+  <li>Ctrl-r: Rotate 90 degrees (turn <b>r</b>ight)
+  <li>Ctrl-l: Rotate 270 degrees (turn <b>l</b>eft)
+  <li>Ctrl-u: Rotate 180 degrees (<b>u</b>pside down)
+ </ul>
+
+<h1>make-my-pictures</h1>
+
+<h2>About</h2>
+
+ This script creates static HTML files from the metadata. There is a
+ page which lists all directories, a page which lists all pictures of
+ a directory and a page for each image.
+
+<h2>Which files get created?</h2>
+
+ Taken the example layout from above, this files will be created:
+
+<pre>
+ image-dir/index.html                    # Table with descriptions of all directories
+                                         # Created by make-my-pictures.py
+
+ image-dir/2006-01-03/index.html         # Preview with thumbnails.
+                                         # Lists all images of the directory.
+                                         # Created by make-my-pictures.py
+
+ image-dir/2006-01-03/IMG1_res150.jpg    # Thumbnails
+ image-dir/2006-01-03/IMG1_res500.jpg    # Created by make-my-pictures.py
+ image-dir/2006-01-03/IMG1_res1024.jpg
+
+ image-dir/2006-01-03/IMG1.html          # HTML-Page for one image
+                                         # created by make-my-pictures.py
+
+ image-dir/2006-01-03/IMG1.gthumpy       # XML file created by editMetadata.py
+</pre>
+
+<h2>JavaScript</h2>
+
+ There is one simple JavaScript method. It marks the text where you
+ link points you (...#FOO in the URL). This is usefull if you have a
+ lot of pictures in one directory or a lot of directories in you
+ image-dir.
+
+<h2>UnicodeError: UTF-8 decoding error: invalid data</h2>
+
+ The default encoding for XML is UTF-8. You should use
+ &lt;?xml version="1.0" encoding="iso-8859-1"?>
+ as the first line of your foo.gthumpy files if you want to 
+ use german umlauts. Edit "template.gthumpy" 
+
+
+<h2>Templates</h2>
+
+<ul>
+ <li>template.gthumpy is used by editMetadata for new pictures.
+ <li>template_picture.html is used for the slide show
+ <li>template_preview.html is used for the overview ot the directory
+</ul>
+
+<h2>How do the created HTML files look like?</h2>
+
+<a href="http://guettli.sf.net/gthumpy/example/">http://guettli.sf.net/gthumpy/example</a>
+
+<h1>Misc</h1>
+
+<h2>How can you translate it an other language?</h2>
+
+ At the moment german (de) and english (en) are supported. You need to
+ create a new file in the language directory "lang" and edit the
+ templates. Have a look at "de.py".
+
+<h2>What libraries/programs does gthumpy use?</h2>
+
+ <ul>
+  <li><a href="http://www.python.org/">python</a>
+  <li><a href="http://www.imagemagick.org/">imagemagick</a> for creating previews.
+  <li><a href="http://www.pygtk.org/">pygtk</a> for the GUI
+  <li><a href="http://packages.debian.org/unstable/graphics/exiftran">Exiftran</a>
+   for automatically rotating images after getting them with <a href="http://www.gphoto.org/">gphoto</a>
+ </ul>
+
+<h2>What licence is used by gthumpy?</h2>
+
+ Gthumpy is in the public domain. You can use it under any open source
+ licence. If you like it, send me an email!
+
+<h2>There are already many scripts, which do things like this. Why did you do it again?</h2>
+
+ <ol>
+
+  <li>Most scripts for HTML pages need a http server. I want to create
+  HTML pages as simple static files.
+
+  <li>I like python programming.
+ </ol>
+
+<h2>Where do I post corrections, typos and feedback?</h2>
+
+ <a href="mailto:guettli&#x40;thomas-guettler&#x2E;de">guettli&#x40;thomas-guettler&#x2E;de</a>
+
+
+<h2>Where can I get it?</h2>
+
+
+<a href="http://guettli.sf.net/gthumpy/download/">http://guettli.sf.net/gthumpy/download</a>
+

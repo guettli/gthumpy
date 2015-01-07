@@ -1,0 +1,2 @@
+imagecache=False
+scale=False

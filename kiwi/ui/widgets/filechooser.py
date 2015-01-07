@@ -1,0 +1,1 @@
+/usr/share/pyshared/kiwi/ui/widgets/filechooser.py

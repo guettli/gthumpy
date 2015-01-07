@@ -1,0 +1,1 @@
+/usr/share/pyshared/kiwi/i18n/i18n.py

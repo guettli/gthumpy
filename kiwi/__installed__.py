@@ -1,0 +1,1 @@
+/usr/share/pyshared/kiwi/__installed__.py

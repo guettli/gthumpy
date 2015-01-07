@@ -1,0 +1,33 @@
+<html>
+ <!-- 
+       This template is used for the preview.
+       It contains a table of all thumbnails of a directory
+  -->
+ <head>
+  <title>%(title)s</title>
+  <script src="../misc/gthumpy.js" type="text/javascript"></script>
+  <script src="../misc/gthumpy.js" type="text/javascript"></script>
+  <script type="text/javascript">
+   document.default_size=500;
+  </script>
+  <link rel=stylesheet type="text/css" href="../misc/style.css">
+  </head>
+ <body onLoad="mark_hash()">
+  <div align="center">
+   %(start_link)s
+   <br>Verzeichnis: <b>%(title)s</b>
+   <table border="1" class="thinborder">
+    <tr>
+     <th>Nr</th>
+     <th>Titel</th>
+     <th>Text</th>
+     <th>Datum</th>
+     <th>Vorschau (Anklicken für große Anzeige)</th>
+    </tr>
+    %(rows)s
+   </table>
+   Verzeichnis: <b>%(title)s</b><br>
+   %(start_link)s
+  </div>
+ </body>
+</html>

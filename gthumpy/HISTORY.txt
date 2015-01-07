@@ -1,0 +1,125 @@
+2002-03-23 Dresden:
+ Angefangen. 
+ Sax Parser für XML-Dateien
+ Ersetzen des Templates
+
+2002-03-24 Chemnitz:
+ Denke mir, dass ich statt XML die config-Dateien auch in Python
+ Dictionaries hätte schreiben können.
+
+ Mit Script angefangen, dass recursive Thumbnails erstellt.
+
+2002-04-03 Dresden:
+ Thumbnails sind nun Links zum Original.
+
+2002-04-05 Dresden:
+ Sorted by Directory funktioniert nun.
+
+2002-04-06 Chemnitz auf Balkon
+ index_fooKeyword wird erstellt.
+
+2002-04-08 Morgens, Fahrt von Chemnitz nach Dresden im Zug
+ Links zu index_fooKeyword funktionieren
+
+2002-04-10 Dresden Abends, Es werden jetzte mehere Auflösungen
+ der Thumbnails produziert. Idee das mit Threads zu lösen.
+
+2002-04-11 Abends, Fange mit Threads an. Kompilizierter als ich dachte, 
+ fand Beispiel des Producer-Consumer Problems im Netz.
+
+2002-04-15 Dresden, Abends. Endlich klappte es mit Threads. Habe dafür eine
+ Klasse geschrieben: AssemblyLine. Mit Threads programmieren ist schwieriger
+ als ich dachte. In jeder Zeile kann ein Dead-Lock passieren.
+
+2002-04-29 Zugfahrt am Montag Morgen von Chemnitz nach DD:
+ Habe es create-thumbnails das erste mal produktiv eingesetzt und für
+ rund 140 Bilder Daten eingeben. Im Moment editiert man die Meta-Daten
+ per "emacs -nw"
+
+2002-05-06 Das Erstellen für ein Verzeichnis in dem keine Test-Bilder
+ sind hat zum ersten mal funktioniert. 
+
+2002-05-16 Dresden, morgens vor der Arbeit:
+ Mache mit GUI zum Eintragen der Metainformationen weiter. Bin
+ von wxPython auf pygtk umgestiegen.
+
+ Abends: Baue Oberfläche mit gtk zusammen. Es braucht viel Gehirnschmalz
+ mit Quelltext eine Oberfläche zu konstruieren.
+ Stelle GthumpyParser um, so dass er besser aus der GUI-Anwendung 
+ aufgerufen werden kann.
+
+2002-05-17 Morgens vor Arbeit:
+ .gthumpy Dateien werden geparst, und in den Text-Felder angezeigt.
+
+2002-06-10 Um Mitternacht:
+ Die Bilder werden nun richtig skalliert. Die Buttons verschieben sich 
+ nicht mehr, das Fenster verändert nicht seine Größe.
+
+2002-06-15 Nachmittag:
+ Speichern der mit dem gtk-Frontend editierten Metainformationen klappt.
+ Als nächstes: rotieren der Bilder per EditMetadata.py
+
+2002-06-18 Abends:
+ Arbeiten mit modalen Dialogen ist nicht einfach. Braucht mehr als
+ eine Stunde um einen simplen Ja, Nein, Abbruch Dialog zu programmieren.
+
+2002-06-30 Nachmittags, nach Boofen mit Katja am Kleinstein 
+ Räume Verzeichnis auf und verschlagworte die Bilder vom Wochenende
+
+2002-07-06 Samstag, Katja in Dresden radelt mit Thorstens Geburtstagstruppe
+ Nähere mich langsam einer benutzbaren Version
+ Erstellten der HTML-Seiten funktioniert.
+ guettli.dyndns.org ist erreichbar, und die Bilder sind durch eine
+ Passwortabfrage geschützt.
+
+2002-07-08 Montag Abend. Fange an mit der Übersicht pro Verzeichnis
+
+2002-10-21 Montag Abend: Nach dem Urlaub auf Hiddensee möchte ich
+ gthumpy nochmal überarbeiten. Die Sache mit den Keywords ist unsinnig.
+ Lösche es. Außerdem soll bei editMetadata das aktuelle Bild größer
+ dargestellt werden.
+
+2002-11-02: Morgens noch schnell Änderungen gemacht:
+ Ohne Keywords, nur ein Verzeichnis. Zur Zeit ist gthumpy "broken".
+
+2002-11-04: Eine halbe Stunde Zeit: Programmiere etwas, index.html
+wird wieder erstellt. Gthumpy-Dateien werden gelöscht, falls keine 
+Bild-Datei vorhanden ist.
+
+2002-11-05: 
+ -Script, das alle Verzeichnisse unter pictures/ixus bearbeitet
+ -index.html für pictures/ixus: Pro Verzeichnis eine description.txt
+
+2002-11-11:
+ Aufgeräumt.
+
+2002-12-30:
+ Kleinen Fehler beseitigt.
+
+2003-03-09:
+ Füge <nobr> hinzu damit Datumsangaben im IE nicht umgebrochen werden.
+
+2003-05-18:
+ Füge check_links.py hinzu: Alle internen Links werden überprüft.
+ Habe ein paar cgi.escape() hinzugefügt, damit tidy zufrieden ist.
+
+2003-11-03:
+ Lese das Datum aus der JPG Datei.
+
+2004-11-07:
+ Vorher: gthumpy.js
+ Internationalisierung _("...")
+ gthumpy.conf.
+ style.css
+
+2005-01-09:
+ - Using gtk2, fullscreen support!, shortcuts
+ - no memory lead after calling gc.collect()
+
+2006-08-19:
+ - Support preloading of the next images and
+   caching the last image.
+ 
+2006-08-26:
+ - Support for ~/.thumbnails/ standard of freedesktop.org
+
