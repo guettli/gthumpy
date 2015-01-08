@@ -100,7 +100,7 @@ def sort_int(files, endswith=None):
     decorated=[]
     regex=re.compile(r'[0-9]+|[a-z]+')
     for file in files:
-        if endswith==None or file.lower().endswith(endswith):
+        if endswith is None or file.lower().endswith(endswith):
             new=[]
             for part in regex.findall(file.lower()):
                 if part in ['img']:

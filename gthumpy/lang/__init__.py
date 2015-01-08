@@ -28,10 +28,10 @@ def _(text):
     assert(type(text)==StringType)
     global transdict
     global translang
-    if transdict==None:
+    if transdict is None:
         raise("Please call lang.set_lang(...) first")
     trans=transdict.get(text)
-    if trans==None:
+    if trans is None:
         if translang!="en":
             sys.stderr.write("mygettext: '%s' unkown in language %s\n" % (
                 text, translang))

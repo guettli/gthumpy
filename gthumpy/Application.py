@@ -707,7 +707,7 @@ class Application:
     def index2image(self, index=None):
         #if not self.images:
         #    return None
-        if index==None:
+        if index is None:
             if not self.image:
                 index=0
             else:
@@ -908,7 +908,7 @@ class Application:
                     
                 5 3 1 2 4  --> sequence in cache  TODO: Doku OK?
         """
-        if self.image==None or not maxsize:
+        if self.image is None or not maxsize:
             return []
         neighbours=[]
         for i in range(maxsize-1):

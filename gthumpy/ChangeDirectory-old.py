@@ -181,7 +181,7 @@ class ChangeDirectory:
     def onDescription(self, widget, dirname):
         description=os.path.join(self.imagedir, dirname, "description.txt")
         ed=EditDescription(description)
-        if ed.newtext!=None:
+        if ed.newtext is not None:
             self.dirname2label[dirname].set_text(ed.newtext)
 
     def onDelete(self, widget=None, event=None):

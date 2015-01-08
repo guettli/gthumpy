@@ -102,7 +102,7 @@ class ImageLoader(object):
                     reload=True
             if reload:
                 # Error during loading. Try again.
-                if age==None:
+                if age is None:
                     age=time.time()-os.path.getmtime(self.filename)
                 if age<30:
                     # Let the process which writes the image some time.

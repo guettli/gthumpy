@@ -46,7 +46,7 @@ def indexForAllDirs(startdir, reverse=True):
         match=re.match(r'.*?(\d\d\d\d)-\d\d-\d\d$', dir)
         if match:
             year=int(match.group(1))
-            if oldyear!=None:
+            if oldyear is not None:
                 if year!=oldyear:
                     rows.append('''
                      <tr>

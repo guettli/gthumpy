@@ -118,11 +118,11 @@ def file2preview(file):
         return
     debug=False # True
     global freedesktop_thumbnails
-    if freedesktop_thumbnails==False:
+    if not freedesktop_thumbnails:
         return scale2pixbuf(PREVIEW_SIZE, PREVIEW_SIZE, file)
     thumbdirall=os.path.join(os.environ["HOME"], ".thumbnails")
     thumbdir=os.path.join(thumbdirall, "large")
-    if freedesktop_thumbnails==None:
+    if freedesktop_thumbnails is None:
         try:
             if not os.path.exists(thumbdirall):
                 os.mkdir(thumbdirall)

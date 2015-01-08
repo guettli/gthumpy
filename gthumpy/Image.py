@@ -69,7 +69,7 @@ DeletionDate=%s
 
 
     def getexifdict(self):
-        if self._exifdict==None:
+        if self._exifdict is None:
             self._exifdict=Utils.exifdict(self.filename)
             if not self._exifdict.has_key("Image DateTime"):
                 self._exifdict["Image DateTime"]="?"

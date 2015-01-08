@@ -37,7 +37,7 @@ def main():
         assert match, dirname
         date=datetime.date(*[int(i) for i in match.groups()])
         mylist=dates.get(date)
-        if mylist==None:
+        if mylist is None:
             mylist=[]
             dates[date]=mylist
         mylist.append(image)
