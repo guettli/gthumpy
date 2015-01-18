@@ -85,7 +85,12 @@ class ActionMenu:
         mis.connect("activate", self.onSendToQtpfsgui)
         mis.set_sensitive(selected)
         self.menu.append(mis)
-        
+
+        mis=gtk.MenuItem("Send selected by email")
+        mis.connect("activate", self.onSendToEmail)
+        mis.set_sensitive(selected)
+        self.menu.append(mis)
+
         self.menu.show_all()
         self.menu.popup(None, None, None, event.button, event.time)
 
@@ -157,6 +162,13 @@ class ActionMenu:
         panorama_tif_to_jpg_script=os.path.join(os.path.dirname(__file__), 'panoramas.py')
         assert os.path.exists(panorama_tif_to_jpg_script), panorama_tif_to_jpg_script
         pid2=subprocess.Popen(['python', panorama_tif_to_jpg_script]).pid
+        Global.app.cursorHourglass(False)
+
+    def onSendToEmail(self, widget):
+        Global.app.cursorHourglass()
+        cmd=['thunderbird', '-compose', "attachment='%s'" % ','.join([image.filename for image in self.selectedimages()])]
+        print('########### %s' % ' '.join(cmd))
+        subprocess.Popen(cmd)
         Global.app.cursorHourglass(False)
 
     def onSendToQtpfsgui(self, widget):
