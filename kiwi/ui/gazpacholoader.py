@@ -1,1 +1,0 @@
-/usr/share/pyshared/kiwi/ui/gazpacholoader.py

@@ -1,1 +1,0 @@
-/usr/share/pyshared/kiwi/__init__.py

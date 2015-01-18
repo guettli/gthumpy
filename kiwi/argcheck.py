@@ -1,1 +1,0 @@
-/usr/share/pyshared/kiwi/argcheck.py
