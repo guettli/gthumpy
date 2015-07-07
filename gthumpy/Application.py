@@ -8,6 +8,7 @@
 """
 
 #Python Imports
+import codecs
 import os
 import re
 import sys
@@ -132,6 +133,11 @@ class Application:
 
         # Description
         d=gtk.VBox()
+
+        self.directory_title=gtk.Label()
+        self.directory_title.set_selectable(True)
+        d.add(self.directory_title)
+
         view=gtk.TextView()
         self.description=gtk.TextBuffer()
         view.set_buffer(self.description)
@@ -702,7 +708,19 @@ class Application:
         self.cursorHourglass(main_iteration=False)
         self.saveMetadata()
         self.image=self.index2image(index)
+        self.load_description()
         gobject.idle_add(self.loadImageIdle, priority=gobject.PRIORITY_LOW)
+
+    def load_description(self):
+        if not self.image:
+            return
+        directory=os.path.dirname(self.image.filename)
+        description=os.path.join(directory, 'description.txt')
+        if not os.path.exists(description):
+            return
+
+        text=open(description).read()
+        self.directory_title.set_text('%s\n%s' % (directory, Utils.try_unicode(text)))
 
     def index2image(self, index=None):
         #if not self.images:
