@@ -91,7 +91,7 @@ class AllPictures:
 
     def load(self):
         image=Global.app.images[0]
-        while image:
+        while image and self.window:
             len_images=len(Global.app.images)
             if not os.path.exists(image.filename):
                 print image.filename, "does not exist"
@@ -113,7 +113,10 @@ class AllPictures:
             while gtk.events_pending():
                 gtk.main_iteration(False)
             image=image.next
-            
+
+        if not self.window:
+            return
+
         va=self.scroll.get_vadjustment()
         if va.get_value()==0:
             # Don't jump to the current image, if the user has scrolled
@@ -131,9 +134,10 @@ class AllPictures:
         
         
     def updateRow(self, image):
-        myflags=image.flags()
-        self.liststore[image.index][1]='\n'.join(
-            [flag.name for flag in myflags])
+        # This slows down the loading a lot.
+        #myflags=image.flags()
+        #self.liststore[image.index][1]='\n'.join(
+        #    [flag.name for flag in myflags])
 
         info=[]
         name=GthumpyUtils.image2name(image.filename)
@@ -146,7 +150,7 @@ class AllPictures:
             self.parser.parse(gthumpy)
             title=self.parser.title
             description=self.parser.description
-        date=image.exifdict.get("Image DateTime", "")
+        date='too-slow' # image.exifdict.get("Image DateTime", "")
         try:
             title=unicode(title)
         except UnicodeDecodeError:
