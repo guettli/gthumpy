@@ -32,11 +32,11 @@ class FullScreen:
         self.window.window.set_cursor(self.cursor)
         self.window.connect("delete-event", self.onDelete)
         screen=self.window.get_screen()
-        self.width=screen.get_width()
-        self.height=screen.get_height()
-
+        monitor=screen.get_monitor_geometry(screen.get_monitor_at_window(self.window.window))
+        self.width=monitor.width
+        self.height=monitor.height
         self.gtkimage=None
-        
+
     def loadImage(self):
         """
         Fullscreen.loadImage
