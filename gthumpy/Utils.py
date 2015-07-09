@@ -24,7 +24,7 @@ import gobject
 
 import debuglog
 
-PREVIEW_SIZE=256
+PREVIEW_SIZE=128
 
 class FlushStream:
     """

@@ -680,10 +680,10 @@ class Application:
             return
         directory=os.path.dirname(self.image.filename)
         description=os.path.join(directory, 'description.txt')
-        if not os.path.exists(description):
-            return
-
-        text=open(description).read()
+        if os.path.exists(description):
+            text=open(description).read()
+        else:
+            text=''
         self.directory_title.set_text('%s\n%s' % (directory, Utils.try_unicode(text)))
 
     def index2image(self, index=None):
@@ -749,8 +749,12 @@ class Application:
         datetime_of_pic=self.image.exifdict.get('Image DateTime', '')
         if datetime_of_pic:
             # 2014:10:25 12:55:21
-            datetime_of_pic=datetime.datetime.strptime(str(datetime_of_pic), '%Y:%m:%d %H:%M:%S')
-            datetime_of_pic=datetime_of_pic.strftime('%Y-%m-%d %H:%M')
+            try:
+                datetime_of_pic=datetime.datetime.strptime(str(datetime_of_pic), '%Y:%m:%d %H:%M:%S')
+            except ValueError:
+                pass
+            else:
+                datetime_of_pic=datetime_of_pic.strftime('%Y-%m-%d %H:%M')
         mydict["datetime"]=datetime_of_pic
         self.infoLabel.set_text(Config.infoLabel % mydict)
         self.image_mtime=os.path.getmtime(self.image.filename)
