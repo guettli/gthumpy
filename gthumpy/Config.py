@@ -15,7 +15,7 @@ int_vars=["width", "height"]
 
 
 class Config:
-    infoLabel="%(indexplusone)sv%(all)s %(Image DateTime)s"
+    infoLabel="%(indexplusone)sv%(all)s %(datetime)s"
     lang="en"
     image_dir=None
     configfile=None

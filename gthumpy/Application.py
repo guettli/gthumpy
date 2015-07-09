@@ -746,6 +746,12 @@ class Application:
         mydict=dict(self.image.exifdict)
         mydict["indexplusone"]=self.image.index+1
         mydict["all"]=len(self.images)
+        datetime_of_pic=self.image.exifdict.get('Image DateTime', '')
+        if datetime_of_pic:
+            # 2014:10:25 12:55:21
+            datetime_of_pic=datetime.datetime.strptime(str(datetime_of_pic), '%Y:%m:%d %H:%M:%S')
+            datetime_of_pic=datetime_of_pic.strftime('%Y-%m-%d %H:%M')
+        mydict["datetime"]=datetime_of_pic
         self.infoLabel.set_text(Config.infoLabel % mydict)
         self.image_mtime=os.path.getmtime(self.image.filename)
         if self.fullscreen:
