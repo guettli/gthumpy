@@ -150,6 +150,9 @@ def find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
         print 'No Next dir found %s' % curr_dir
         return None
 
+class DirectoryDoesNotExist(ValueError):
+    pass
+
 def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     u'''
     Find next directory with images
@@ -165,8 +168,8 @@ def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     try:
         idx=files.index(basename)
     except ValueError:
-        raise ValueError('%s not in %s?' % (
-                basename, files))
+        raise DirectoryDoesNotExist('%s not in files of %s: %s?' % (
+                basename, dirname, files))
     next_dir=None
     while True:
         idx+=jump

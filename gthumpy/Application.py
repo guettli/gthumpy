@@ -551,43 +551,7 @@ class Application:
             self.cursorHourglass(False)
 
     def onGetPictures(self, widget=None):
-        today=datetime.date.today()
-        newdir=os.path.join(os.path.dirname(self.dir), "%d-%02d-%02d" % (
-            today.year, today.month, today.day))
-        if not os.path.exists(newdir):
-            os.mkdir(newdir)
-        cmd="cd '%s'; LANG=C gphoto2 --get-all-files" % (
-            newdir)
-        self.cursorHourglass()
-        pipe=popen2.Popen4(cmd)
-        output=[]
-        pipe.tochild.close()
-        for line in pipe.fromchild:
-            output.append(line)
-            match=re.match(r'^Saving file as (\S+)\s*$', line)
-            if match and Utils.exiftran_failed==False:
-                file=match.group(1)
-                if file.endswith(".jpg") or file.endswith(".JPG"):
-                    file=os.path.join(newdir, file)
-                    ret=os.system("exiftran -aip '%s'" % (file))
-                    if ret:
-                        Utils.exiftran_failed=True
-        output=''.join(output)
-        ret=pipe.wait()
-        self.cursorHourglass(False)
-        if ret:
-            dialog=gtk.MessageDialog(self.window, gtk.DIALOG_MODAL |
-                                     gtk.DIALOG_DESTROY_WITH_PARENT,
-                                     gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
-                                     output)
-            dialog.run()
-            dialog.destroy()
-            try:
-                os.rmdir(newdir)
-            except OSError:
-                pass
-            return
-        self.set_dir(newdir)
+        raise NotImplementedError()
 
         
     def onDelete(self, widget=None, event=None):

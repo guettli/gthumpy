@@ -229,6 +229,12 @@ def filename_to_date(filename, fallback=None):
     date=datetime.date(*[int(i) for i in match.groups()])
     return date
 
+def filename_to_base_dir(filename):
+    match=re.search(r'(.*)\d\d\d\d.?\d\d.?\d\d.*', filename)
+    if not match:
+        raise ValueError('No basedir found: %s' % filename)
+    return match.group(1)
+
 def filename2md5(filename):
     assert os.path.isabs(filename), filename
     uri="file://%s" % filename

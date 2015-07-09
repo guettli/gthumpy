@@ -6,16 +6,20 @@
 """
 
 # Python
+import glob
 import os
 
 import gtk
+import datetime
 
 from kiwi.ui.objectlist import Column
 
 # gthumpy
 import filebrowser
-from Utils import try_unicode
+from Utils import try_unicode, filename_to_base_dir
 import Global
+from gthumpy import GthumpyUtils
+
 
 class GthumpyTreeNode(object):
     skip=False
@@ -95,13 +99,30 @@ class ChangeDirectory(object):
         vbox.add(self.tree)
         self.only_without_stars=gtk.CheckButton('Nur Bilder ohne Sternchen laden')
         vbox.pack_start(self.only_without_stars, False)
+        load_current_dir=gtk.Button('Aktuellstes Verzeichnis laden')
+        load_current_dir.connect('clicked', self.load_most_current_directory)
+        vbox.pack_start(load_current_dir, False)
+
         self.window.add(vbox)
         if os.path.exists(Global.app.dir):
             self.tree.expand_path(Global.app.dir)
         self.window.show_all()
         gtk.main()
         Global.app.cursorHourglass(False)
-        
+
+    def load_most_current_directory(self, widget, data=None):
+        base=filename_to_base_dir(Global.app.dir)
+        for i in range(400):
+            start=datetime.date.today()+datetime.timedelta(days=2-i)
+            first_try=os.path.join(base, str(start.year), '%02d' % start.month, '%02d' % start.day)
+            try:
+                first_try=glob.glob('%s*' % first_try)[0]
+            except IndexError:
+                continue
+            break
+        next=GthumpyUtils.find_next(first_try, jump=GthumpyUtils.JUMP_PREV)
+        self.load_directory(next)
+
     def restart(self):
         Global.app.cursorHourglass()
         self.window.show_all()
@@ -126,7 +147,10 @@ class ChangeDirectory(object):
                 node.description=ed.newtext
             self.window.window.show()
             return
-        Global.app.set_dir(node.pathname)
+        self.load_directory(node.pathname)
+
+    def load_directory(self, dir_name):
+        Global.app.set_dir(dir_name)
         gtk.main_quit()
         self.window.hide()
     
