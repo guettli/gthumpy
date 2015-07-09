@@ -126,6 +126,8 @@ class ChangeDirectory(object):
     def restart(self):
         Global.app.cursorHourglass()
         self.window.show_all()
+        if os.path.exists(Global.app.dir):
+            self.tree.expand_path(Global.app.dir)
         gtk.main()
         Global.app.cursorHourglass(False)
         

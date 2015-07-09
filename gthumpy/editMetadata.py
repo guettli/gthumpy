@@ -35,8 +35,8 @@ $HeadURL: file:///home/guettli/svn/gthumpy/trunk/src/editMetadata.py $
     os.path.basename(sys.argv[0]))
 
 # Let ctrl-c break dialogs, too.
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
+#import signal
+#signal.signal(signal.SIGINT, signal.SIG_DFL)
         
 def main():
     sys.stdout=Utils.FlushStream(sys.stdout)

@@ -85,8 +85,10 @@ class Tree(ObjectTree):
         for filename in path_list:
             node=self._expand_node_path(node, filename)
             self.expand(node, open_all=False)
-            iter=self._iters[id(node)]
-            self._treeview.get_selection().select_iter(iter)
+        iter=self._iters[id(node)]
+        selection=self._treeview.get_selection()
+        selection.set_mode(gtk.SELECTION_SINGLE)
+        selection.select_iter(iter)
 
             
     def _expand_node_path(self, node, filename):
