@@ -99,7 +99,6 @@ def scale2pixbuf(width_max, height_max, filename=None, return_size=False,
         return pixbuf, width_orig, height_orig
     return pixbuf
 
-freedesktop_thumbnails=None
 #   True  --> Use ~/.thumbnails/
 #   False --> Creating $HOME/.thumbnails/normal failed. Don't use ~/.thumbnails/
 #   None  --> Uninitialized: Did not check if ~/.thumbnails/normal/ exists yet.
@@ -117,24 +116,16 @@ def file2preview(file):
     if ext in file2preview_skip:
         return
     debug=False # True
-    global freedesktop_thumbnails
-    if not freedesktop_thumbnails:
-        return scale2pixbuf(PREVIEW_SIZE, PREVIEW_SIZE, file)
     thumbdirall=os.path.join(os.environ["HOME"], ".thumbnails")
     thumbdir=os.path.join(thumbdirall, "large")
-    if freedesktop_thumbnails is None:
-        try:
-            if not os.path.exists(thumbdirall):
-                os.mkdir(thumbdirall)
-                os.chmod(thumbdirall, 0700)
-            if not os.path.exists(thumbdir):
-                os.mkdir(thumbdir)
-                os.chmod(thumbdir, 0700)
-            freedesktop_thumbnails=True
-        except Exception, e:
-            print "Failed to create %s: %s" % (thumbdir, e)
-            freedesktop_thumbnails=False
-            return scale2pixbuf(PREVIEW_SIZE, PREVIEW_SIZE, file)
+
+    if not os.path.exists(thumbdirall):
+        os.mkdir(thumbdirall)
+        os.chmod(thumbdirall, 0700)
+    if not os.path.exists(thumbdir):
+        os.mkdir(thumbdir)
+        os.chmod(thumbdir, 0700)
+
     mtime=os.path.getmtime(file)
     uri="file://%s" % os.path.abspath(file)
     hash=hashlib.md5()

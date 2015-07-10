@@ -241,8 +241,6 @@ class Application:
         gobject.timeout_add(500, self.onIdle_CreatePreviews, priority=gobject.PRIORITY_LOW)
         
     def onIdle_CreatePreviews(self, priority=None):
-        if Utils.freedesktop_thumbnails==False:
-            return False
         if not self.create_previews:
             return False
         file=self.create_previews.pop(0)
