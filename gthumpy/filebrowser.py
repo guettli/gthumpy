@@ -89,6 +89,9 @@ class Tree(ObjectTree):
         selection=self._treeview.get_selection()
         selection.set_mode(gtk.SELECTION_SINGLE)
         selection.select_iter(iter)
+        tree_path=self.get_model().get_path(iter)
+        self._treeview.scroll_to_cell(tree_path)
+
 
             
     def _expand_node_path(self, node, filename):
