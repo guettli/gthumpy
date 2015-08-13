@@ -194,6 +194,8 @@ class Application:
         dir=dir.rstrip("/")
         avis=0
         for file in os.listdir(dir):
+            if file.startswith('.'):
+                continue
             file=os.path.join(dir, file)
             if not os.path.isfile(file):
                 continue
@@ -768,8 +770,7 @@ class Application:
             self.gtkimage.show()
 
         gthumpy="%s.gthumpy" % GthumpyUtils.image2name(self.image.filename)
-        if not self.parser:
-            self.parser=GthumpyParser.GthumpyParser()
+        self.parser=GthumpyParser.GthumpyParser()
         if os.path.exists(gthumpy):
             self.parser.parse(gthumpy)
 
