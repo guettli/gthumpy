@@ -57,7 +57,7 @@ class Tree(ObjectTree):
             if remove_this:
                 sub_node=model[iter][COL_MODEL]
                 to_remove.append(sub_node)
-        remove_iter(self._iters[id(node)], False)
+        remove_iter(self._iters[node], False)
         
         try:
             files=os.listdir(node.pathname)
@@ -85,7 +85,8 @@ class Tree(ObjectTree):
         for filename in path_list:
             node=self._expand_node_path(node, filename)
             self.expand(node, open_all=False)
-        iter=self._iters[id(node)]
+
+        iter=self._iters[node]
         selection=self._treeview.get_selection()
         selection.set_mode(gtk.SELECTION_SINGLE)
         selection.select_iter(iter)
@@ -95,10 +96,13 @@ class Tree(ObjectTree):
 
             
     def _expand_node_path(self, node, filename):
+        if not node:
+            return
         model=self.get_model()
+
         if not node.loaded:
             self.expand(node, open_all=False)
-        child_iter=model.iter_children(self._iters[id(node)])
+        child_iter=model.iter_children(self._iters[node])
         while child_iter:
             sub_node=model[child_iter][COL_MODEL]
             if sub_node.name==filename:
