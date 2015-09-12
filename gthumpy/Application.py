@@ -21,6 +21,7 @@ import logging
 import datetime
 import tempfile
 import subprocess
+import traceback
 import xml.sax.saxutils
 
 import gtk
@@ -221,7 +222,6 @@ class Application:
                         skip=True
                         break
                 if skip:
-                    #print 'skipping', image, image.flags()
                     continue # no star Flag set
             self.images.append(image)
         self.dir=dir
@@ -431,7 +431,7 @@ class Application:
                 jump=GthumpyUtils.JUMP_PREV
             else:
                 jump=GthumpyUtils.JUMP_NEXT
-            return self.onNextDir(jump=jump)
+            return self.onFindNextDir(jump=jump)
 
         if event.keyval in [gtk.keysyms.Page_Down]:
             # PageDown
@@ -583,7 +583,7 @@ class Application:
         if Utils.yesNoDialog(self.window, u'End of %s.\n\nJump to %s dir %s?\n\n%s\n%s' % (
                 self.dir,
                 GthumpyUtils.jump_verbose[jump], next, weekday, descr), default=True):
-            self.onNextDir(jump=jump, next=next)
+            self.onForceNextDir(jump, next)
             if not self.images:
                 return None
             return self.images[0]
@@ -594,34 +594,33 @@ class Application:
         else:
             index=0
         return self.images[index]
-        
-    def onNextDir(self, jump=GthumpyUtils.JUMP_NEXT, next=None):
-        u'''
-        go to next dir, don't ask.
 
-        next: None, if the next directory is not known (Shift-PageUp)
-              or a directory if known: PageUp, nextDirDialog(), onNextDir()
-        '''
+    def onFindNextDir(self, jump):
         self.cursorHourglass()
         for i in range(100):
-            if next is None:
-                try:
-                    next=GthumpyUtils.find_next(self.dir, jump=jump)
-                except OSError, exc:
-                    md = gtk.MessageDialog(self.window, 
-                                           gtk.DIALOG_DESTROY_WITH_PARENT, 
-                                           gtk.MESSAGE_INFO, 
-                                           gtk.BUTTONS_CLOSE, str(exc))
-                    md.run()
-                    md.destroy()
-                    break
-            if not next: 
+            try:
+                next=GthumpyUtils.find_next(self.dir, jump=jump)
+            except OSError, exc:
+                md = gtk.MessageDialog(self.window,
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       gtk.MESSAGE_INFO,
+                                       gtk.BUTTONS_CLOSE, str(exc))
+                md.run()
+                md.destroy()
+                break
+            if not next:
                 break # kein nächstes Verzeichnise
             self.set_dir(next)
             if self.images:
                 break # OK, Verzeichnis gefunden.
         self.cursorHourglass(False)
-        return True # Don't scroll in scrolledwindow
+        return True
+
+    def onForceNextDir(self, jump, force_this_dir):
+        self.cursorHourglass()
+        self.set_dir(force_this_dir)
+        self.cursorHourglass(False)
+        return True
 
     def onAll(self, widget):
         if self.all:
@@ -821,10 +820,6 @@ class Application:
         changes the cursor.
         """
         debug=False
-        if debug:
-            import traceback
-            print 'cursorHourglass set=%s main_i=%s Stack:' % (set, main_iteration)
-            traceback.print_stack()
         windows=[]
         if self.window:
             windows.append(self.window)

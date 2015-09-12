@@ -170,7 +170,6 @@ def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     except ValueError:
         raise DirectoryDoesNotExist('%s not in files of %s: %s?' % (
                 basename, dirname, files))
-    next_dir=None
     while True:
         idx+=jump
         if idx==len(files) or idx==-1:
@@ -178,7 +177,6 @@ def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
             return _find_next(dirname, jump, rec_depth+1)
         next_dir=os.path.join(dirname, files[idx])
         if not os.path.isdir(next_dir):
-            next_dir=None
             continue
         found=_find_depth(next_dir, jump, rec_depth+1)
         if found:

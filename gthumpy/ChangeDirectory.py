@@ -98,8 +98,6 @@ class ChangeDirectory(object):
         self.tree._treeview.connect('row-activated', self.on_activated)
         vbox=gtk.VBox()
         vbox.add(self.tree)
-        self.only_without_stars=gtk.CheckButton('Nur Bilder ohne Sternchen laden')
-        vbox.pack_start(self.only_without_stars, False)
         load_current_dir=gtk.Button('Aktuellstes Verzeichnis laden')
         load_current_dir.connect('clicked', self.load_most_current_directory)
         vbox.pack_start(load_current_dir, False)
