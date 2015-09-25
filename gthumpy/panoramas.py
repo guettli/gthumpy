@@ -1,69 +1,140 @@
 #!/usr/bin/env python
-import os
-import sys
 import glob
-import time
-import datetime
+import sys
+import itertools
+import subprocess
 
+import os
 import Utils
-import glib
 
-MAX_SIZE=3000
+MAX_SIZE = 3000
+
+import argparse
 
 def main():
-    while True:
-        missing_tif=create_small_jpgs()
-        if not missing_tif:
-            break
-        print '%s missing tif files. I wait and try again ...' % missing_tif
-        time.sleep(10)
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--all-dirs-in-this-dir', action='store_true', default=False)
+    parser.add_argument('directories', nargs='+')
+    args=parser.parse_args()
+    if not args.all_dirs_in_this_dir:
+        # ~/panoramas/2015--foo/
+        do_panoramas_in_dirs(args.directories)
+    else:
+        # ~/panoramas
+        for upper_dir in args.directories:
+            do_panoramas_in_dirs([os.path.abspath(
+                os.path.join(upper_dir, dir)) for dir in os.listdir(upper_dir)])
 
-def create_small_jpgs():
-    panorama_dir=os.path.join(os.environ['HOME'], 'panoramas')
+def do_panoramas_in_dirs(directories):
+    for directory in directories:
+        panorama = Panorama.create_panorama_object_or_none(directory)
+        if not panorama:
+            continue
+        panorama.create_panorama_jpg_from_source_files()
+
+def is_target_out_of_date(target_file_name, source_file_names):
+    '''
+    Makefile like: return True if target is out of date.
+    If one source file is newer, return True.
+    '''
+    if not os.path.exists(target_file_name):
+        return True
+    return max([os.path.getmtime(source) for source in source_file_names])>os.path.getmtime(target_file_name)
+
+def create_panoramas_in_directory(panorama_dir):
     if not os.path.isdir(panorama_dir):
         print 'Does not exist: %s' % panorama_dir
         sys.exit(3)
-    missing_tif=0
-    now=datetime.datetime.now()
     for fn in sorted(os.listdir(panorama_dir)):
-        fn_abs=os.path.join(panorama_dir, fn)
-        if not os.path.isdir(fn_abs):
+        fn_abs = os.path.join(panorama_dir, fn)
+        panorama = Panorama.create_panorama_object_or_none(fn_abs)
+        if not panorama:
             continue
-        source_dir=os.path.join(fn_abs, 'source-dir.txt')
-        if not os.path.exists(source_dir):
-            continue
-        source_dir=open(source_dir).read().strip()
-        if not os.path.exists(source_dir):
-            print '%s does not exist (%s)' % (source_dir, fn_abs)
-            continue
-        try:
-            pto=glob.glob(os.path.join(fn_abs, '*.pto'))[0]
-        except IndexError:
-            missing_tif+=1
-            print '%s .pto does not exist (up to now)' % fn_abs
-            continue
-        tif='%s.tif' % pto.rsplit('.', 1)[0]
-        if not os.path.exists(tif):
-            missing_tif+=1
-            print '%s .tif does not exist (up to now)' % fn_abs
-            continue
-        jpg=os.path.join(source_dir, '%s.jpg' % fn)
-        if os.path.exists(jpg):
-            mtime=datetime.datetime.fromtimestamp(os.path.getmtime(jpg))
-            if now-mtime<datetime.timedelta(hours=1):
-                # file is young, report
-                print 'OK, already done', jpg
-            continue
-        try:
-            pb=Utils.scale2pixbuf(MAX_SIZE, MAX_SIZE, tif)
-        except glib.GError, exc:
-            print exc
-            missing_tif+=1
-            print 'I guess TIF gets written ...'
-            continue
-        pb.save(jpg, 'jpeg')
-        print 'created', jpg
-    return missing_tif
+        panorama.create_panorama_jpg_from_source_files()
 
-if __name__=='__main__':
+
+class Panorama(object):
+    def __init__(self, directory):
+        self.directory = os.path.abspath(directory)
+
+    @property
+    def base_name(self):
+        return os.path.basename(self.directory)
+
+    @property
+    def tif(self):
+        return os.path.join(self.directory, '%s.tif' % self.base_name)
+
+    @property
+    def panorama_jpg(self):
+        return os.path.join(self.source_dir, '%s.jpg' % self.base_name)
+
+    @property
+    def source_dir(self):
+        return open(self.source_dir_file).read().strip()
+
+    @property
+    def source_dir_file(self):
+        return os.path.join(self.directory, 'source-dir.txt')
+
+    @property
+    def pto(self):
+        return os.path.join(self.directory, '%s.pto' % self.base_name)
+
+    @property
+    def source_files(self):
+        return sorted([file for file in os.listdir(self.directory) if file.lower().endswith('.jpg')])
+
+    def create_pto(self):
+        if not is_target_out_of_date(self.pto, self.source_files):
+            return
+        for cmd in [
+            ['pto_gen', '-o', self.pto] + self.source_files,
+            ('cpfind', '-o', self.pto, '--multirow', '--celeste', self.pto),
+            ('cpclean', '-o', self.pto, self.pto),
+            ('linefind', '-o', self.pto, self.pto),
+            ('autooptimiser', '-a', '-m', '-l', '-s', '-o', self.pto, self.pto),
+            ('pano_modify', '--canvas=AUTO', '--crop=AUTO', '-o', self.pto, self.pto),
+            ]:
+            subprocess.check_call(cmd)
+
+    def create_tif(self):
+        if not is_target_out_of_date(self.tif, itertools.chain(self.source_files, [self.pto])):
+            return
+        for cmd in [
+            ('PTBatcher', '-a', self.pto, '-o', self.tif),
+            ('PTBatcher', '-b'),
+            ('notify-send', 'Created panorama %s' % self.base_name),
+        ]:
+            subprocess.call(cmd)
+
+    def create_panorama_jpg_from_source_files(self):
+        os.chdir(self.directory)
+
+        self.create_pto()
+
+        self.create_tif()
+
+        self.create_panorama_jpg()
+
+    def create_panorama_jpg(self):
+        if not os.path.exists(self.source_dir_file):
+            print 'Not source-dir found', self.source_dir_file
+            return
+        if not is_target_out_of_date(self.panorama_jpg,
+                                     itertools.chain(self.source_files, [self.pto, self.tif])):
+            print 'target not out of date. Skipping', self.panorama_jpg
+            return
+        pb = Utils.scale2pixbuf(MAX_SIZE, MAX_SIZE, self.tif)
+        pb.save(self.panorama_jpg, 'jpeg')
+        print 'created', self.panorama_jpg
+
+    @classmethod
+    def create_panorama_object_or_none(cls, directory):
+        if not os.path.isdir(directory):
+            print 'directory %s does not exist' % directory
+            return
+        return cls(directory)
+
+if __name__ == '__main__':
     main()

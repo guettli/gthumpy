@@ -156,13 +156,6 @@ class ActionMenu:
         fd=open(os.path.join(dest, 'source-dir.txt'), 'wt')
         fd.write('%s\n' % os.path.dirname(first_image))
         fd.close()
-        cmd=['nice', '-n', '20', 'hugin']
-        cmd.extend(images)
-        pid=subprocess.Popen(cmd).pid
-        panorama_tif_to_jpg_script=os.path.join(os.path.dirname(__file__), 'panoramas.py')
-        assert os.path.exists(panorama_tif_to_jpg_script), panorama_tif_to_jpg_script
-        pid2=subprocess.Popen(['python', panorama_tif_to_jpg_script]).pid
-        Global.app.cursorHourglass(False)
 
     def onSendToEmail(self, widget):
         Global.app.cursorHourglass()
