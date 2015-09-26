@@ -153,8 +153,8 @@ class ActionMenu:
         for image in self.selectedimages():
             images.append(os.path.join(dest, os.path.basename(image.filename)))
         self.copy_or_move(dest, move=True)
-        fd=open(os.path.join(dest, 'source-dir.txt'), 'wt')
-        fd.write('%s\n' % os.path.dirname(first_image))
+        fd=open(os.path.join(dest, 'target-file.txt'), 'wt')
+        fd.write(os.path.join(os.path.dirname(first_image), '%s.jpg' % name))
         fd.close()
 
     def onSendToEmail(self, widget):

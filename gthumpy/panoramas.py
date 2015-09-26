@@ -18,7 +18,7 @@ def main():
     do_panoramas_in_dirs(args.directories)
 
 def do_panoramas_in_dirs(directories):
-    for directory in directories:
+    for directory in [os.path.abspath(d) for d in directories]:
         panorama = Panorama.create_panorama_object_or_none(directory)
         if not panorama:
             continue
@@ -59,15 +59,13 @@ class Panorama(object):
 
     @property
     def panorama_jpg(self):
-        return os.path.join(self.source_dir, '%s.jpg' % self.base_name)
+        if not os.path.exists(self.target_file_file):
+            return os.path.join(self.directory, '%s.jpg' % self.base_name)
+        return open(self.target_file_file).read().strip()
 
     @property
-    def source_dir(self):
-        return open(self.source_dir_file).read().strip()
-
-    @property
-    def source_dir_file(self):
-        return os.path.join(self.directory, 'source-dir.txt')
+    def target_file_file(self):
+        return os.path.join(self.directory, 'target-file.txt')
 
     @property
     def pto(self):
@@ -75,7 +73,14 @@ class Panorama(object):
 
     @property
     def source_files(self):
-        return sorted([file for file in os.listdir(self.directory) if file.lower().endswith('.jpg')])
+        files=[]
+        for file in sorted(os.listdir(self.directory)):
+            if not file.lower().endswith('.jpg'):
+                continue
+            if file==os.path.basename(self.panorama_jpg):
+               continue
+            files.append(file)
+        return files
 
     def pto_file_crop_was_done(self):
         '''
@@ -132,9 +137,6 @@ class Panorama(object):
         self.create_panorama_jpg()
 
     def create_panorama_jpg(self):
-        if not os.path.exists(self.source_dir_file):
-            print 'Not source-dir found', self.source_dir_file
-            return
         if not is_target_out_of_date(self.panorama_jpg,
                                      itertools.chain(self.source_files, [self.pto, self.tif])):
             print 'target not out of date. Skipping', self.panorama_jpg
