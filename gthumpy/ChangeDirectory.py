@@ -45,9 +45,9 @@ class GthumpyTreeNode(object):
         if dummy:
             return
         try:
-            self.description=try_unicode(open(os.path.join(pathname, 'description.txt')).read())
+            self.description_of_directory=try_unicode(open(os.path.join(pathname, 'description.txt')).read())
         except IOError:
-            self.description=''
+            self.description_of_directory=''
         try:
             files=os.listdir(self.pathname)
         except OSError:
@@ -144,8 +144,8 @@ class ChangeDirectory(object):
         index=self.tree._treeview.get_columns().index(column)
         if index==4:
             ed=EditDescription(os.path.join(node.pathname, 'description.txt'))
-            if not ed.newtext is None:
-                node.description=ed.newtext
+            if not ed.new_description is None:
+                node.description_of_directory=ed.new_description
             self.window.window.show()
             return
         self.load_directory(node.pathname)
@@ -169,10 +169,10 @@ class EditDescription:
         vbox=gtk.VBox()
         view=gtk.TextView()
         # klappt nicht: view.set_border_window_size(gtk.TEXT_WINDOW_BOTTOM, 5)
-        self.description=gtk.TextBuffer()
-        self.description.insert(self.description.get_iter_at_offset(0),
+        self.description_text_buffer=gtk.TextBuffer()
+        self.description_text_buffer.insert(self.description_text_buffer.get_iter_at_offset(0),
                 descr)
-        view.set_buffer(self.description)
+        view.set_buffer(self.description_text_buffer)
         view.set_wrap_mode(gtk.WRAP_WORD)
         view.set_editable(1)
         vbox.add(view)
@@ -194,17 +194,17 @@ class EditDescription:
                          os.path.basename(os.path.dirname(filename)))
         window.connect("delete-event", self.onDelete)
         window.show_all()
-        self.newtext=None
+        self.new_description=None
         gtk.main()
         
     def onOK(self, widget):
-        desc=self.description.get_text(
-            self.description.get_iter_at_offset(0),
-            self.description.get_iter_at_offset(-1)).strip()
+        desc=self.description_text_buffer.get_text(
+            self.description_text_buffer.get_iter_at_offset(0),
+            self.description_text_buffer.get_iter_at_offset(-1)).strip()
         fd=open(self.filename, "wt")
         fd.write(desc.encode("latin1"))
         fd.close()
-        self.newtext=desc
+        self.new_description=desc
         self.onDelete()
 
     def onDelete(self, widget=None, event=None):

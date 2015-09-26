@@ -117,7 +117,7 @@ class Gthumpy:
         for file in filenames:
             number+=1
             title=self.pf.titles[file]
-            description=self.pf.descriptions[file]
+            description_of_image=self.pf.descriptions[file]
             date=self.pf.dates[file]
             fn_orig=name2image(file, no_exception=1)
             fn_thumb=insert_midfix(fn_orig, thumbnail_extension)
@@ -132,10 +132,10 @@ class Gthumpy:
                 title="&nbsp;"
             else:
                 title=cgi.escape(title)
-            if description=="":
-                description="&nbsp;"
+            if description_of_image=="":
+                description_of_image="&nbsp;"
             else:
-                description=cgi.escape(description)
+                description_of_image=cgi.escape(description_of_image)
             if date=="":
                 date="&nbsp;"
             file_rel=relative_url(index_filename, file)
@@ -145,7 +145,7 @@ class Gthumpy:
               <td>%s</td>
               <td>%s</td>
               <td><a name="%s"><nobr>%s</nobr></a></td>''' % (
-                number, title, description,
+                number, title, description_of_image,
                 base64.b64encode(file_rel), date))
             fn_thumb_rel=relative_url(index_filename, fn_thumb)
             rows.append('''
@@ -155,12 +155,12 @@ class Gthumpy:
                            urllib.quote(fn_thumb_rel)))
             rows.append("</tr>")
         rows=''.join(rows)
-        description_file=os.path.join(self.root, "description.txt")
+        description_file=os.path.join(self.root, "description_of_image.txt")
         if os.path.isfile(description_file):
-            description=open(description_file).read()
+            description_of_image=open(description_file).read()
         else:
-            description=""
-        title=cgi.escape(description)
+            description_of_image=""
+        title=cgi.escape(description_of_image)
         start_link='<a href="../index.html#%s" onclick="goto_href(this)">%s</a>' % (
             base64.b64encode(os.path.basename(self.root)),
             _("Back to overview"))
@@ -183,11 +183,11 @@ class Gthumpy:
         else:
             title=cgi.escape(title)
         date=self.pf.dates.get(file, "????-??-??")
-        description=self.pf.descriptions.get(file)
-        if not description:
-            description="&nbsp;"
+        description_of_image=self.pf.descriptions.get(file)
+        if not description_of_image:
+            description_of_image="&nbsp;"
         else:
-            description=cgi.escape(description)
+            description_of_image=cgi.escape(description_of_image)
         index='''
          <span style="color: gray">%sv%s</span>
          <a href="index.html#%s" onclick="goto_href(this)">%s</a>''' % (

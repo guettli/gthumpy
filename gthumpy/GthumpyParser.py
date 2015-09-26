@@ -38,7 +38,7 @@ class GthumpyParser(ContentHandler):
     supported_elements=["gthumpy", "title", "description", "date"]
 
     title=''
-    description=''
+    description_of_image=''
     def characters(self, content):
         self.content.append(content.encode("latin1"))
 
@@ -66,7 +66,7 @@ class GthumpyParser(ContentHandler):
             #root-element
             pass
         elif name=="description":
-            self.description=content
+            self.description_of_image=content
         elif name=="title":
             self.title=content
         else:

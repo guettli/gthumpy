@@ -79,7 +79,14 @@ class AllPictures:
             dir=os.path.basename(Global.app.dir)
         else:
             dir=Global.app.dirname
-        window.set_title("All Pictures of %s" % dir)
+
+        description_of_directory=Global.app.description_of_directory
+
+        max_length=75
+        if len(description_of_directory)>max_length:
+            description_of_directory='%s ...' % description_of_directory[:max_length]
+
+        window.set_title("All Pictures of %s. %s" % (dir, description_of_directory))
         window.connect("delete-event", self.onDelete)
         window.show_all()
         self.window=window
@@ -145,11 +152,11 @@ class AllPictures:
         if not os.path.exists(gthumpy):
             date=""
             title=""
-            description=""
+            description_of_image=""
         else:
             self.parser.parse(gthumpy)
             title=self.parser.title
-            description=self.parser.description
+            description_of_image=self.parser.description_of_image
         date='too-slow' # image.exifdict.get("Image DateTime", "")
         try:
             title=unicode(title)

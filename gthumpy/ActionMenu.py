@@ -138,7 +138,12 @@ class ActionMenu:
             response=dialog.run()
             print response
             name=entry.get_text()
+            if not name:
+                dialog.destroy()
+                Global.app.cursorHourglass(False)
+                return
             regex=r'^[a-zA-Z0-9_-]+$'
+
             if not re.match(regex, name):
                 error.set_text(r'Name does not match regular expression %s' % regex)
                 continue
@@ -153,9 +158,9 @@ class ActionMenu:
         for image in self.selectedimages():
             images.append(os.path.join(dest, os.path.basename(image.filename)))
         self.copy_or_move(dest, move=True)
-        fd=open(os.path.join(dest, 'target-file.txt'), 'wt')
-        fd.write(os.path.join(os.path.dirname(first_image), '%s.jpg' % name))
-        fd.close()
+        with open(os.path.join(dest, 'target-file.txt'), 'wt') as fd:
+            fd.write(os.path.join(os.path.dirname(first_image), '%s.jpg' % name))
+        Global.app.cursorHourglass(False)
 
     def onSendToEmail(self, widget):
         Global.app.cursorHourglass()

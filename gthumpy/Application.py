@@ -140,8 +140,8 @@ class Application:
         d.add(self.directory_title)
 
         view=gtk.TextView()
-        self.description=gtk.TextBuffer()
-        view.set_buffer(self.description)
+        self.description_of_current_image_textbuffer=gtk.TextBuffer()
+        view.set_buffer(self.description_of_current_image_textbuffer)
         view.set_wrap_mode(gtk.WRAP_WORD)
         view.set_editable(1)
         d.add(view)
@@ -643,9 +643,9 @@ class Application:
             return # no image loaded yet
         gthumpy="%s.gthumpy" % GthumpyUtils.image2name(self.image.filename)
         title=self.title.get_text().strip()
-        text=self.description.get_text(
-            self.description.get_iter_at_offset(0),
-            self.description.get_iter_at_offset(-1)).strip()
+        text=self.description_of_current_image_textbuffer.get_text(
+            self.description_of_current_image_textbuffer.get_iter_at_offset(0),
+            self.description_of_current_image_textbuffer.get_iter_at_offset(-1)).strip()
         if not title and not text:
             if os.path.exists(gthumpy):
                 os.unlink(gthumpy)
@@ -671,19 +671,22 @@ class Application:
         self.cursorHourglass(main_iteration=False)
         self.saveMetadata()
         self.image=self.index2image(index)
-        self.load_description()
+        self.load_description_of_directory()
         gobject.idle_add(self.loadImageIdle, priority=gobject.PRIORITY_LOW)
 
-    def load_description(self):
-        if not self.image:
-            return
+    def load_description_of_directory(self):
         directory=os.path.dirname(self.image.filename)
-        description=os.path.join(directory, 'description.txt')
-        if os.path.exists(description):
-            text=open(description).read()
-        else:
-            text=''
-        self.directory_title.set_text('%s\n%s' % (directory, Utils.try_unicode(text)))
+        self.directory_title.set_text('%s\n%s' % (directory, self.description_of_directory))
+
+    @property
+    def description_of_directory(self):
+        if not self.image:
+            return ''
+        directory=os.path.dirname(self.image.filename)
+        description_of_directory=os.path.join(directory, 'description_of_directory.txt')
+        if not os.path.exists(description_of_directory):
+            return ''
+        return Utils.try_unicode(open(description_of_directory).read())
 
     def index2image(self, index=None):
         #if not self.images:
@@ -774,12 +777,12 @@ class Application:
             self.parser.parse(gthumpy)
 
         self.title.set_text(unicode(self.parser.title, "latin1"))
-        self.description.delete(
-            self.description.get_iter_at_offset(0),
-            self.description.get_iter_at_offset(-1))
-        self.description.insert(self.description.get_iter_at_offset(0),
+        self.description_of_current_image_textbuffer.delete(
+            self.description_of_current_image_textbuffer.get_iter_at_offset(0),
+            self.description_of_current_image_textbuffer.get_iter_at_offset(-1))
+        self.description_of_current_image_textbuffer.insert(self.description_of_current_image_textbuffer.get_iter_at_offset(0),
                                 unicode(
-            self.parser.description, "latin1"))#, -1)
+            self.parser.description_of_image, "latin1"))#, -1)
 
         #self.editflags.loadflagfiles()
         if hourglass:
@@ -793,9 +796,9 @@ class Application:
         self.window.set_title("Application: -")
         self.infoLabel.set_text("0v0")
         self.title.set_text("")
-        self.description.delete(
-            self.description.get_iter_at_offset(0),
-            self.description.get_iter_at_offset(-1))
+        self.description_of_current_image_textbuffer.delete(
+            self.description_of_current_image_textbuffer.get_iter_at_offset(0),
+            self.description_of_current_image_textbuffer.get_iter_at_offset(-1))
         self.gtkimage.clear()
         self.cursorHourglass(False)
         

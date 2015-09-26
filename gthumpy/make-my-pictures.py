@@ -94,9 +94,9 @@ def main():
                 #at least one gthumpy file was changed
                 create=True
                 break
-        description=os.path.join(dir, "description.txt")
-        if mtime_html and os.path.isfile(description) and \
-           os.path.getmtime(description)>mtime_html:
+        description_of_directory=os.path.join(dir, "description_of_directory.txt")
+        if mtime_html and os.path.isfile(description_of_directory) and \
+           os.path.getmtime(description_of_directory)>mtime_html:
             create=True
         if not os.path.exists(os.path.join(dir, "index.html")):
             create=True
