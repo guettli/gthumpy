@@ -13,17 +13,9 @@ import argparse
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--all-dirs-in-this-dir', action='store_true', default=False)
     parser.add_argument('directories', nargs='+')
     args=parser.parse_args()
-    if not args.all_dirs_in_this_dir:
-        # ~/panoramas/2015--foo/
-        do_panoramas_in_dirs(args.directories)
-    else:
-        # ~/panoramas
-        for upper_dir in args.directories:
-            do_panoramas_in_dirs([os.path.abspath(
-                os.path.join(upper_dir, dir)) for dir in sorted(os.listdir(upper_dir))])
+    do_panoramas_in_dirs(args.directories)
 
 def do_panoramas_in_dirs(directories):
     for directory in directories:
@@ -124,6 +116,11 @@ class Panorama(object):
             ('notify-send', 'Created panorama %s' % self.base_name),
         ]:
             subprocess.call(cmd)
+
+        if not os.path.exists(self.tif):
+            fused_tif='%s_fused.tif' % self.tif[:-4]
+            if os.path.exists(fused_tif):
+                os.rename(fused_tif, self.tif)
 
     def create_panorama_jpg_from_source_files(self):
         os.chdir(self.directory)
