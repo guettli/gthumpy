@@ -17,7 +17,7 @@ setup(
     description='Python GTK GUI to view my photo collection',
     long_description=long_description,
 
-    url='TODO',
+    url='https://github.com/guettli/gthumpy',
 
     # Author details
     author='Thomas Guettler',
@@ -32,6 +32,7 @@ setup(
     entry_points={
         'console_scripts': [
             'gthumpy=gthumpy.editMetadata:main',
+            'create-panorama-from-jpg-files-in-directory=gthumpy.panoramas:main',
         ],
     },
 )

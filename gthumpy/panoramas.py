@@ -23,7 +23,7 @@ def main():
         # ~/panoramas
         for upper_dir in args.directories:
             do_panoramas_in_dirs([os.path.abspath(
-                os.path.join(upper_dir, dir)) for dir in os.listdir(upper_dir)])
+                os.path.join(upper_dir, dir)) for dir in sorted(os.listdir(upper_dir))])
 
 def do_panoramas_in_dirs(directories):
     for directory in directories:
@@ -85,9 +85,26 @@ class Panorama(object):
     def source_files(self):
         return sorted([file for file in os.listdir(self.directory) if file.lower().endswith('.jpg')])
 
+    def pto_file_crop_was_done(self):
+        '''
+        pto_gen creates a pto file. But only if last step (pano_modify --crop) was
+        successfull, the pto file is complete.
+        Check for
+        pre-crop : p f0 w1307 h1142 v95  E0.0352164 R0 n"TIFF_m c:LZW r:CROP"
+        post-crop: p f0 w1867 h1631 v95  E0.0632719 R0 S125,1744,83,1179 n"TIFF_m c:LZW r:CROP"
+        '''
+        for line in open(self.pto):
+            if not line.startswith('p '):
+                continue
+            for item in line.split():
+                if item.startswith('S'):
+                    return True
+        return False
+
     def create_pto(self):
         if not is_target_out_of_date(self.pto, self.source_files):
-            return
+            if self.pto_file_crop_was_done():
+                return
         for cmd in [
             ['pto_gen', '-o', self.pto] + self.source_files,
             ('cpfind', '-o', self.pto, '--multirow', '--celeste', self.pto),
@@ -125,6 +142,9 @@ class Panorama(object):
                                      itertools.chain(self.source_files, [self.pto, self.tif])):
             print 'target not out of date. Skipping', self.panorama_jpg
             return
+        if not os.path.exists(self.tif):
+            print '%s does not exist. Can not create panorama_jpg' % self.tif
+            return
         pb = Utils.scale2pixbuf(MAX_SIZE, MAX_SIZE, self.tif)
         pb.save(self.panorama_jpg, 'jpeg')
         print 'created', self.panorama_jpg
@@ -135,6 +155,3 @@ class Panorama(object):
             print 'directory %s does not exist' % directory
             return
         return cls(directory)
-
-if __name__ == '__main__':
-    main()
