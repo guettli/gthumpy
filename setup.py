@@ -32,7 +32,6 @@ setup(
     entry_points={
         'console_scripts': [
             'gthumpy=gthumpy.editMetadata:main',
-            'create-panorama-from-jpg-files-in-directory=gthumpy.panoramas:main',
         ],
     },
 )
