@@ -83,7 +83,10 @@ class Tree(ObjectTree):
         path_list.reverse()
         node=self.root_node
         for filename in path_list:
-            node=self._expand_node_path(node, filename)
+            try:
+                node=self._expand_node_path(node, filename)
+            except self.FilenameNotInModel, exc:
+                continue
             self.expand(node, open_all=False)
 
         iter=self._iters[node]
@@ -94,7 +97,9 @@ class Tree(ObjectTree):
         self._treeview.scroll_to_cell(tree_path)
 
 
-            
+    class FilenameNotInModel(Exception):
+        pass
+
     def _expand_node_path(self, node, filename):
         if not node:
             return
@@ -108,7 +113,7 @@ class Tree(ObjectTree):
             if sub_node.name==filename:
                 return sub_node
             child_iter=model.iter_next(child_iter)
-        raise ValueError('%s not in %s' % (filename, node))
+        raise self.FilenameNotInModel('%s not in %s' % (filename, node))
         
     def append_path(self, parent, pathname):
         assert (not parent) or isinstance(parent, self.TreeNode), parent
