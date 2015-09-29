@@ -94,8 +94,8 @@ class ChangeDirectory(object):
                         Column('img_count', justify=gtk.JUSTIFY_RIGHT), 
                         Column('dir_count', justify=gtk.JUSTIFY_RIGHT), 
                         Column('file_count', justify=gtk.JUSTIFY_RIGHT),
-                        Column('description')])
-        self.tree._treeview.connect('row-activated', self.on_activated)
+                        Column('description_of_directory')])
+        self.tree._treeview.connect('row-activated', self.on_row_click)
         vbox=gtk.VBox()
         vbox.add(self.tree)
         load_current_dir=gtk.Button('Aktuellstes Verzeichnis laden')
@@ -140,10 +140,12 @@ class ChangeDirectory(object):
         gtk.main_quit()
         return True
 
-    def on_activated(self, treeview, path, column):
+    ROW_INDEX_DESCRIPTION=4
+
+    def on_row_click(self, treeview, path, column):
         node=self.tree._model[path][0]
         index=self.tree._treeview.get_columns().index(column)
-        if index==4:
+        if index==self.ROW_INDEX_DESCRIPTION:
             ed=EditDescription(os.path.join(node.pathname, 'description.txt'))
             if not ed.new_description is None:
                 node.description_of_directory=ed.new_description
@@ -163,16 +165,16 @@ class EditDescription:
         self.filename=filename
         if os.path.exists(filename):
             fd=open(filename) # .../2004-12-13/description.txt
-            descr=unicode(fd.read().strip(), "latin1")
+            description_as_string=try_unicode(fd.read().strip())
             fd.close()
         else:
-            descr=""
+            description_as_string=''
         vbox=gtk.VBox()
         view=gtk.TextView()
         # klappt nicht: view.set_border_window_size(gtk.TEXT_WINDOW_BOTTOM, 5)
         self.description_text_buffer=gtk.TextBuffer()
         self.description_text_buffer.insert(self.description_text_buffer.get_iter_at_offset(0),
-                descr)
+                description_as_string)
         view.set_buffer(self.description_text_buffer)
         view.set_wrap_mode(gtk.WRAP_WORD)
         view.set_editable(1)
