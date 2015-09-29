@@ -113,14 +113,15 @@ class ChangeDirectory(object):
         base=filename_to_base_dir(Global.app.dir)
         for i in range(400):
             start=datetime.date.today()+datetime.timedelta(days=2-i)
-            first_try=os.path.join(base, str(start.year), '%02d' % start.month, '%02d' % start.day)
+            directory=os.path.join(base, str(start.year), '%02d' % start.month, '%02d' % start.day)
             try:
-                first_try=glob.glob('%s*' % first_try)[0]
+                directory=glob.glob('%s*' % directory)[0]
             except IndexError:
+                print('nothing found %s' % directory)
                 continue
+            print('found %s' % directory)
             break
-        next=GthumpyUtils.find_next(first_try, jump=GthumpyUtils.JUMP_PREV)
-        self.load_directory(next)
+        self.load_directory(directory)
 
     def restart(self):
         Global.app.cursorHourglass()
