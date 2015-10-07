@@ -118,34 +118,53 @@ def sort_int(files, endswith=None):
     return files
 
 MAX_DEPTH=20
-def _find_depth(curr_dir, jump=JUMP_NEXT, rec_depth=0):
+def find_this_or_child_directory(curr_dir, jump=JUMP_NEXT, rec_depth=0):
+    images, sub_dirs = get_images_and_subdirs(curr_dir, jump=jump, rec_depth=rec_depth)
+    if images:
+        return curr_dir
+    for dir in sub_dirs:
+        try:
+            return find_this_or_child_directory(dir, jump, rec_depth+1)
+        except NoMatchFound:
+            continue
+    raise NoMatchFound()
+
+def get_images_and_subdirs(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     if rec_depth>MAX_DEPTH:
         raise NoMatchFound()
-    dirs=[]
     files=sorted(os.listdir(curr_dir))
     if jump==JUMP_PREV:
         files=reversed(files)
-    dirs=[]
+    sub_dirs=[]
+    images=[]
     for file in files:
         file=os.path.join(curr_dir, file)
         extension=image_extension(file)
         if extension:
-            # OK, found a directory with images. open it.
-            return curr_dir
+            images.append(file)
         if os.path.isdir(file):
-            dirs.append(file)
-    for dir in dirs:
-        found=_find_depth(dir, jump, rec_depth+1)
-        if found:
-            return found
-    return None
+            sub_dirs.append(file)
+    return (images, sub_dirs)
+
+def find_child_directory(curr_dir, jump=JUMP_NEXT, rec_depth=0):
+    images, sub_dirs = get_images_and_subdirs(curr_dir, jump, rec_depth)
+    for sub_dir in sub_dirs:
+        try:
+            return find_this_or_child_directory(sub_dir, jump, rec_depth)
+        except NoMatchFound:
+            continue
+    raise NoMatchFound()
 
 class NoMatchFound(Exception):
     pass
 
-def find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
+def find_next_directory(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     try:
-        return _find_next(curr_dir, jump, rec_depth)
+        return find_child_directory(curr_dir, jump=jump, rec_depth=rec_depth)
+    except NoMatchFound:
+        pass
+    try:
+        return find_sibbling_directory(curr_dir, jump, rec_depth)
     except NoMatchFound:
         print 'No Next dir found %s' % curr_dir
         return None
@@ -153,7 +172,7 @@ def find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
 class DirectoryDoesNotExist(ValueError):
     pass
 
-def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
+def find_sibbling_directory(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     u'''
     Find next directory with images
     '''
@@ -164,6 +183,7 @@ def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
     if not basename:
         raise Exception('No next/prev directory found. self.dir=%s' % (
                 'TODO'))
+
     files=sorted(os.listdir(dirname))
     try:
         idx=files.index(basename)
@@ -174,16 +194,18 @@ def _find_next(curr_dir, jump=JUMP_NEXT, rec_depth=0):
         idx+=jump
         if idx==len(files) or idx==-1:
             # current dir is already last/first
-            return _find_next(dirname, jump, rec_depth+1)
+            return find_sibbling_directory(dirname, jump, rec_depth+1)
         next_dir=os.path.join(dirname, files[idx])
         if not os.path.isdir(next_dir):
             continue
-        found=_find_depth(next_dir, jump, rec_depth+1)
-        if found:
-            return found
+        try:
+            return find_this_or_child_directory(next_dir, jump, rec_depth+1)
+        except NoMatchFound:
+            continue
+    raise NoMatchFound()
 
 def find_next_dir_and_description(curr_dir, jump=JUMP_NEXT):
-    next=find_next(curr_dir, jump)
+    next=find_next_directory(curr_dir, jump)
     if not next:
         return (next, '')
     descr_file=os.path.join(next, 'description.txt')
@@ -197,10 +219,7 @@ def test_sort_int():
         "a/STA_1000.jpg"]
     l_ist=sort_int(l)
     assert l_ist==[ 'a/STA_1000.jpg', 'a/IMG_9000.jpg'], l_ist
-if __name__=="__main__":
-    print find_next('/home/guettli/Bilder/2010/01/03')
-    #test_sort_int()
-    
+
                 
                 
 

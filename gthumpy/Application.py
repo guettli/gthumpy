@@ -599,7 +599,7 @@ class Application:
         self.cursorHourglass()
         for i in range(100):
             try:
-                next=GthumpyUtils.find_next(self.dir, jump=jump)
+                next=GthumpyUtils.find_next_directory(self.dir, jump=jump)
             except OSError, exc:
                 md = gtk.MessageDialog(self.window,
                                        gtk.DIALOG_DESTROY_WITH_PARENT,

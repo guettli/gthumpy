@@ -25,6 +25,8 @@ setup(
 
     license='BSD',
 
+    install_requires=['cached-property'],
+
     classifiers=[
         'Programming Language :: Python :: 2',
     ],
