@@ -34,4 +34,5 @@ setup(
             'gthumpy=gthumpy.editMetadata:main',
         ],
     },
+    test_suite='tests',
 )
