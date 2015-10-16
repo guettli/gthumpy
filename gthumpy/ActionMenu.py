@@ -180,6 +180,8 @@ class ActionMenu:
         Global.app.cursorHourglass(False)
         
     def onCopy(self, widget, move=False):
+        if not Global.app.images:
+            return
         fc=gtk.FileChooserDialog(
             action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
             parent=Global.app.all.window,

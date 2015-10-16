@@ -23,6 +23,7 @@ from EditFlags import EditFlags
 
 class AllPictures:
     main_called=False
+    window=None
     def __init__(self):
         if not Global.app.images:
             return
@@ -97,6 +98,8 @@ class AllPictures:
         Global.app.load_size_of_win(self)
 
     def load(self):
+        if not Global.app.images:
+            return
         image=Global.app.images[0]
         while image and self.window:
             len_images=len(Global.app.images)
@@ -125,7 +128,7 @@ class AllPictures:
             return
 
         va=self.scroll.get_vadjustment()
-        if va.get_value()==0:
+        if va and va.get_value()==0:
             # Don't jump to the current image, if the user has scrolled
             # while the window creates all thumbnails.
             self.scroll_to_current()

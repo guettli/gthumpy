@@ -228,7 +228,7 @@ class Application:
         self.dirname=os.path.basename(dir)
         self.loadImage(0)
         self.window.show_all()
-        if self.all:
+        if self.all and self.all.window:
             self.all.window.destroy()
         self.all=None
         self.create_previews=list(files)
@@ -675,6 +675,8 @@ class Application:
         gobject.idle_add(self.loadImageIdle, priority=gobject.PRIORITY_LOW)
 
     def load_description_of_directory(self):
+        if not self.images:
+            return
         directory=os.path.dirname(self.image.filename)
         self.directory_title.set_text('%s\n%s' % (directory, self.description_of_directory))
 
@@ -938,6 +940,8 @@ class Application:
         self.set_dir(dest)
 
     def save_size_of_win(self, object):
+        if not object.window:
+            return
         size=object.window.get_size()
         file=os.path.join(self.config.sizes_dir, object.__class__.__name__)
         fd=open(file, 'wt')
