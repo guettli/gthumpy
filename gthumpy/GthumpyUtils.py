@@ -220,7 +220,10 @@ def test_sort_int():
     l_ist=sort_int(l)
     assert l_ist==[ 'a/STA_1000.jpg', 'a/IMG_9000.jpg'], l_ist
 
-                
+def insensitive_glob(pattern):
+    def either(c):
+        return '[%s%s]'%(c.lower(),c.upper()) if c.isalpha() else c
+    return glob.glob(''.join(map(either,pattern)))
                 
 
         

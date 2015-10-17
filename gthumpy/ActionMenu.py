@@ -6,6 +6,7 @@
 """
 
 # Python Imports
+from gthumpy import GthumpyUtils
 import os
 import re
 import glob
@@ -152,6 +153,9 @@ class ActionMenu:
         first_image=self.selectedimages()[0].filename
         base=os.path.basename(first_image).rsplit('.', 1)[0]
         dest=os.path.join(os.environ['HOME'], 'panoramas', '%s--%s' % (base, name))
+
+        result_name='%s--%s.jpg' % (GthumpyUtils.image2name(first_image), name)
+
         if not os.path.exists(dest):
             os.makedirs(dest)
         images=[]
@@ -159,7 +163,7 @@ class ActionMenu:
             images.append(os.path.join(dest, os.path.basename(image.filename)))
         self.copy_or_move(dest, move=True)
         with open(os.path.join(dest, 'target-file.txt'), 'wt') as fd:
-            fd.write(os.path.join(os.path.dirname(first_image), '%s.jpg' % name))
+            fd.write(result_name)
         Global.app.cursorHourglass(False)
 
     def onSendToEmail(self, widget):
