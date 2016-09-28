@@ -16,6 +16,7 @@ import subprocess
 # pygtk
 import gtk
 import gobject
+import glib
 
 # My Imports
 import Utils
@@ -115,7 +116,7 @@ class ImageLoader(object):
             return False # Stop
         try:
             self.loader.write(buf)
-        except gobject.GError, exc:
+        except (glib.GError, gobject.GError), exc:
             print 'Error', self
             raise
         if self.background!=self.background_old:
