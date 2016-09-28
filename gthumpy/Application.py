@@ -758,9 +758,9 @@ class Application:
             except ValueError:
                 pass
             else:
-                datetime_of_pic=datetime_of_pic.strftime('%Y-%m-%d %H:%M')
+                datetime_of_pic=datetime_of_pic.strftime('%Y-%m-%d %H:%M (%a)')
         mydict["datetime"]=datetime_of_pic
-        self.infoLabel.set_text(Config.infoLabel % mydict)
+        self.infoLabel.set_text(Config.info_label_template % mydict)
         self.image_mtime=os.path.getmtime(self.image.filename)
         if self.fullscreen:
             self.fullscreen.loadImage()
