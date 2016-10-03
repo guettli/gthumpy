@@ -24,7 +24,7 @@ import Global
 import debuglog
 
 class ImageLoader(object):
-    chunksize=130000
+    chunksize=65000
     pixbuf=None
     #background_prios={True: gobject.PRIORITY_LOW,
     #                  False: gobject.PRIORITY_DEFAULT_IDLE}
