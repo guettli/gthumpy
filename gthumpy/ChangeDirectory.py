@@ -113,11 +113,12 @@ class ChangeDirectory(object):
         base=filename_to_base_dir(Global.app.dir)
         for i in range(400):
             start=datetime.date.today()+datetime.timedelta(days=2-i)
-            directory=os.path.join(base, str(start.year), '%02d' % start.month, '%02d' % start.day)
+            directory=os.path.join(base, str(start.year), '%s-%02d' % (start.year, start.month), 
+                '%s-%02d-%02d' % (start.year, start.month, start.day))
             try:
                 directory=glob.glob('%s*' % directory)[0]
             except IndexError:
-                print('nothing found %s' % directory)
+                print('nothing found %s %s' % (directory, base))
                 continue
             print('found %s' % directory)
             break

@@ -221,7 +221,7 @@ def filename_to_date(filename, fallback=None):
     return date
 
 def filename_to_base_dir(filename):
-    match=re.search(r'(.*)\d\d\d\d.?\d\d.?\d\d.*', filename)
+    match=re.search(r'(.*)\d\d\d\d-\d\d.?\d\d\d\d-\d\d.?\d\d\d\d-\d\d-\d\d.*', filename)
     if not match:
         import glib
         return glib.get_user_special_dir(glib.USER_DIRECTORY_PICTURES)
