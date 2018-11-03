@@ -9,7 +9,7 @@ import StringIO
 
 from Utils import try_unicode
 
-image_extensions=['jpg', 'jpeg', 'png', 'avi', 'mov', 'mp4']
+image_extensions=['jpg', 'jpeg', 'png']
 
 JUMP_NEXT=1
 JUMP_PREV=-1
