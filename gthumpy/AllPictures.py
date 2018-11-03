@@ -160,7 +160,7 @@ class AllPictures:
             self.parser.parse(gthumpy)
             title=self.parser.title
             description_of_image=self.parser.description_of_image
-        date='too-slow' # image.exifdict.get("Image DateTime", "")
+        date=os.path.basename(os.path.dirname(name)) # 'too-slow' # image.exifdict.get("Image DateTime", "")
         try:
             title=unicode(title)
         except UnicodeDecodeError:

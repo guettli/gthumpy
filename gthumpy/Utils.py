@@ -214,10 +214,14 @@ def exifdict(filename):
     return exifdict
 
 def filename_to_date(filename, fallback=None):
-    match=re.search(r'(\d\d\d\d).?(\d\d).?(\d\d)', filename)
+    match=re.search(r'(\d\d\d\d)(\d\d)(\d\d)', filename)
     if not match:
         return fallback
-    date=datetime.date(*[int(i) for i in match.groups()])
+    try:
+        date=datetime.date(*[int(i) for i in match.groups()])
+    except ValueError as exc:
+        print('Failed to convert to date: %s %s %s' % (filename, match.groups(), exc))
+        return fallback
     return date
 
 def filename_to_base_dir(filename):
