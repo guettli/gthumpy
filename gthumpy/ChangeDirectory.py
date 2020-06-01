@@ -8,7 +8,7 @@
 # Python
 import glob
 import os
-
+import io
 import gtk
 import datetime
 
@@ -205,9 +205,8 @@ class EditDescription:
         desc=self.description_text_buffer.get_text(
             self.description_text_buffer.get_iter_at_offset(0),
             self.description_text_buffer.get_iter_at_offset(-1)).strip()
-        fd=open(self.filename, "wt")
-        fd.write(desc.encode("latin1"))
-        fd.close()
+        with io.open(self.filename, 'wt', encoding='utf8') as fd:
+            fd.write(try_unicode(desc))
         self.new_description=desc
         self.onDelete()
 
